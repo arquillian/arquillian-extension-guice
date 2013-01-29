@@ -69,8 +69,3 @@ public class AppointmentServiceImplTestCase {
     }
 }
 ```
-
-## TODO
-
-* Unit tests
-* Configuring the extension through arquillian.xml for specifying the Guice artifact version.
