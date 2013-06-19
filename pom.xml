@@ -15,7 +15,7 @@
     <!-- Artifact Configuration -->
     <groupId>org.jboss.arquillian.extension</groupId>
     <artifactId>arquillian-guice-parent</artifactId>
-    <version>1.0.0.Alpha1</version>
+    <version>1.0.0.Final-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Google Guice Extension</name>
