@@ -25,6 +25,28 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git://git@github.com:arquillian/arquillian-extension-guice.git</connection>
+        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-extension-guice.git</developerConnection>
+        <url>git://github.com/arquillian/arquillian-extension-guice.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>arquillian.org</id>
+            <name>Arquillian Community</name>
+            <organization>arquillian.org</organization>
+            <organizationUrl>http://arquillian.org</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+
+        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+
+    </properties>
+
     <!-- Dependencies -->
     <dependencies>
 
