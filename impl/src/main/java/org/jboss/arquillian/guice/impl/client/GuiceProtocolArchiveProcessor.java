@@ -25,8 +25,10 @@ import org.jboss.arquillian.guice.impl.configuration.GuiceExtensionConfiguration
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 
 import java.io.File;
 
@@ -141,8 +143,11 @@ public class GuiceProtocolArchiveProcessor implements ProtocolArchiveProcessor {
      * @return the resolved files
      */
     private File[] resolveArtifact(String artifact) {
-        MavenDependencyResolver mvnResolver = DependencyResolvers.use(MavenDependencyResolver.class);
 
-        return mvnResolver.artifacts(artifact).resolveAsFiles();
+        MavenResolverSystem mavenResolver = Maven.resolver();
+
+        mavenResolver.addDependencies(MavenDependencies.createDependency(artifact, ScopeType.COMPILE, false));
+
+        return mavenResolver.resolve().withTransitivity().asFile();
     }
 }
