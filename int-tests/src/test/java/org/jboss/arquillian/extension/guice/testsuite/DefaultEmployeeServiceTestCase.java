@@ -24,6 +24,7 @@ import org.jboss.arquillian.extension.guice.testsuite.service.EmployeeService;
 import org.jboss.arquillian.extension.guice.testsuite.service.impl.DefaultEmployeeService;
 import org.jboss.arquillian.guice.api.annotation.GuiceConfiguration;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
@@ -43,9 +44,15 @@ import static org.junit.Assert.assertNotNull;
 @GuiceConfiguration(EmployeeModule.class)
 public class DefaultEmployeeServiceTestCase {
 
+    /**
+     * Creates the test deployment.
+     *
+     * @return the test deployment
+     */
     @Deployment
-    public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(JavaArchive.class, "guice-model.jar")
+    public static Archive createTestArchive() {
+
+        return ShrinkWrap.create(JavaArchive.class, "guice-test.jar")
                 .addClasses(Employee.class,
                         EmployeeService.class, DefaultEmployeeService.class,
                         EmployeeRepository.class, DefaultEmployeeRepository.class,

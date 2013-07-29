@@ -43,6 +43,11 @@ public final class GuiceExtensionConsts {
     public static final String GUICE_ARTIFACT_NAME = "com.google.inject:guice";
 
     /**
+     * Represents the Guice extension servlet artifact name.
+     */
+    public static final String GUICE_SEVLET_ARTIFACT_NAME = "com.google.inject.extensions:guice-servlet";
+
+    /**
      * Represents the default Guice maven artifact version.
      */
     public static final String GUICE_ARTIFACT_VERSION = "3.0";

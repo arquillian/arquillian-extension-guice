@@ -20,6 +20,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.jboss.arquillian.guice.api.annotation.GuiceConfiguration;
 import org.jboss.arquillian.guice.api.annotation.GuiceInjector;
+import org.jboss.arquillian.guice.api.annotation.GuiceWebConfiguration;
+import org.jboss.arquillian.guice.api.utils.InjectorHolder;
 import org.jboss.arquillian.guice.impl.model.EmployeeModule;
 import org.jboss.arquillian.test.spi.context.ClassContext;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
@@ -33,6 +35,8 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
  * Tests the {@link InjectorProducer} class.
@@ -78,6 +82,9 @@ public class InjectorProducerTestCase extends AbstractTestTestBase {
         // cleans the context
         getManager().fire(new AfterSuite());
         getManager().getContext(ClassContext.class).deactivate();
+
+        // removes any injector created by the tests
+        InjectorHolder.removeInjector();
     }
 
     /**
@@ -91,6 +98,41 @@ public class InjectorProducerTestCase extends AbstractTestTestBase {
 
         // then
         assertNotNull("The injector hasn't been created.", getManager().resolve(Injector.class));
+    }
+
+    /**
+     * Tests the {@link InjectorProducer#initInjector(BeforeClass)} method.
+     */
+    @Test
+    public void shouldResolveWebInjector() {
+
+        // given
+        Injector injector = Guice.createInjector(new EmployeeModule());
+        InjectorHolder.bindInjector(injector);
+
+        // when
+        getManager().fire(new BeforeClass(TestClassWithWebConfiguration.class));
+
+        // then
+        assertNotNull("The injector hasn't been created.", getManager().resolve(Injector.class));
+        assertSame("The injector was not correctly resolved.", injector, getManager().resolve(Injector.class));
+    }
+
+    /**
+     * Tests the {@link InjectorProducer#initInjector(BeforeClass)} method.
+     */
+    @Test
+    public void shouldResolveNullWebInjector() {
+
+        // given
+        // clears any injector created by the tests
+        InjectorHolder.removeInjector();
+
+        // when
+        getManager().fire(new BeforeClass(TestClassWithWebConfiguration.class));
+
+        // then
+        assertNull("The injector was not correctly resolved.", getManager().resolve(Injector.class));
     }
 
     /**
@@ -108,6 +150,8 @@ public class InjectorProducerTestCase extends AbstractTestTestBase {
 
     /**
      * A sample unit test with a custom guice configuration.
+     *
+     * @author <a href="mailto:jmnarloch@gmail.com">Jakub Narloch</a>
      */
     @GuiceConfiguration(EmployeeModule.class)
     private static class TestClass {
@@ -123,7 +167,27 @@ public class InjectorProducerTestCase extends AbstractTestTestBase {
     }
 
     /**
+     * A sample unit test with a custom guice configuration.
+     *
+     * @author <a href="mailto:jmnarloch@gmail.com">Jakub Narloch</a>
+     */
+    @GuiceWebConfiguration
+    private static class TestClassWithWebConfiguration {
+
+        /**
+         * Dummy test method.
+         */
+        @Test
+        public void test() {
+
+            // empty test
+        }
+    }
+
+    /**
      * A sample unit test with custom guice injector factory method.
+     *
+     * @author <a href="mailto:jmnarloch@gmail.com">Jakub Narloch</a>
      */
     private static class TestClassWithCustomModule {
 

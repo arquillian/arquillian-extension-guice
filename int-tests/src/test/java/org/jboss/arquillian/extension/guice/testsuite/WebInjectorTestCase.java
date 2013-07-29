@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2013, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,7 +16,6 @@
  */
 package org.jboss.arquillian.extension.guice.testsuite;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -24,11 +23,14 @@ import org.jboss.arquillian.extension.guice.testsuite.repository.EmployeeReposit
 import org.jboss.arquillian.extension.guice.testsuite.repository.impl.DefaultEmployeeRepository;
 import org.jboss.arquillian.extension.guice.testsuite.service.EmployeeService;
 import org.jboss.arquillian.extension.guice.testsuite.service.impl.DefaultEmployeeService;
+import org.jboss.arquillian.extension.guice.testsuite.servlet.EmployeeModuleContextListener;
 import org.jboss.arquillian.guice.api.annotation.GuiceInjector;
+import org.jboss.arquillian.guice.api.annotation.GuiceWebConfiguration;
+import org.jboss.arquillian.guice.api.utils.InjectorHolder;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,12 +40,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Test the {@link DefaultEmployeeRepository} class.
+ * Test the injection of Injector created in servlet environment.
  *
  * @author <a href="mailto:jmnarloch@gmail.com">Jakub Narloch</a>
  */
+@GuiceWebConfiguration
 @RunWith(Arquillian.class)
-public class CustomInjectorTestCase {
+public class WebInjectorTestCase {
 
     /**
      * Creates the test deployment.
@@ -52,23 +55,12 @@ public class CustomInjectorTestCase {
      */
     @Deployment
     public static Archive createTestArchive() {
-
-        return ShrinkWrap.create(JavaArchive.class, "guice-test.jar")
+        return ShrinkWrap.create(WebArchive.class, "guice-test.war")
                 .addClasses(Employee.class,
                         EmployeeService.class, DefaultEmployeeService.class,
                         EmployeeRepository.class, DefaultEmployeeRepository.class,
-                        EmployeeModule.class);
-    }
-
-    /**
-     * Creates the Guice injector.
-     *
-     * @return the Guice {@link Injector}
-     */
-    @GuiceInjector
-    public static Injector createInjector() {
-
-        return Guice.createInjector(new EmployeeModule());
+                        EmployeeModule.class, EmployeeModuleContextListener.class)
+                .addAsWebInfResource("WEB-INF/web.xml", "web.xml");
     }
 
     /**

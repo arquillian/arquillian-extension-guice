@@ -18,6 +18,8 @@ package org.jboss.arquillian.guice.impl.client;
 
 import org.jboss.arquillian.guice.api.annotation.GuiceConfiguration;
 import org.jboss.arquillian.guice.api.annotation.GuiceInjector;
+import org.jboss.arquillian.guice.api.servlet.ArquillianGuiceFilter;
+import org.jboss.arquillian.guice.api.utils.InjectorHolder;
 import org.jboss.arquillian.guice.impl.GuiceExtensionConsts;
 import org.jboss.arquillian.guice.impl.container.GuiceEnricherRemoteExtension;
 import org.jboss.arquillian.guice.impl.enricher.GuiceInjectionEnricher;
@@ -47,7 +49,7 @@ public class GuiceEnricherArchiveAppenderTestCase {
      */
     private final static List<Class<?>> REQUIRED_CLASSES = Arrays.asList(GuiceEnricherRemoteExtension.class,
             GuiceInjectionEnricher.class, InjectorProducer.class, GuiceExtensionConsts.class, GuiceConfiguration.class,
-            GuiceInjector.class);
+            GuiceInjector.class, ArquillianGuiceFilter.class, InjectorHolder.class);
 
     /**
      * Represents the instance of the tested class.
