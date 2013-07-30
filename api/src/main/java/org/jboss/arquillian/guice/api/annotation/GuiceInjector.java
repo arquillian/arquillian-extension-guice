@@ -17,16 +17,25 @@
 package org.jboss.arquillian.guice.api.annotation;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Allows to construct custom injector in the model class.
+ * Allows to construct custom injector in the test class.
+ * <p />
+ * This is a marker annotation which allows to define a static factory method within the test that will be responsible
+ * for creating the instance of the Guice injector at the runtime.
+ *
+ * The method should have fallowing signature:
+ * <pre>
+ * public static Injector [method_name]();
+ * </pre>
+ *
+ * The actual return type must be assignable into a Injector type, otherwise a {@link ClassCastException} will be
+ * thrown.
  *
  * @author <a href="mailto:jmnarloch@gmail.com">Jakub Narloch</a>
  */

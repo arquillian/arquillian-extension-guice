@@ -19,6 +19,8 @@ package org.jboss.arquillian.guice.impl.client;
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 import org.jboss.arquillian.container.test.spi.client.deployment.CachedAuxilliaryArchiveAppender;
 import org.jboss.arquillian.guice.api.annotation.GuiceConfiguration;
+import org.jboss.arquillian.guice.api.servlet.ArquillianGuiceFilter;
+import org.jboss.arquillian.guice.api.utils.InjectorHolder;
 import org.jboss.arquillian.guice.impl.GuiceExtensionConsts;
 import org.jboss.arquillian.guice.impl.container.GuiceEnricherRemoteExtension;
 import org.jboss.arquillian.guice.impl.enricher.GuiceInjectionEnricher;
@@ -46,6 +48,8 @@ public class GuiceEnricherArchiveAppender extends CachedAuxilliaryArchiveAppende
                 .addPackage(InjectorProducer.class.getPackage())
                 .addPackage(GuiceExtensionConsts.class.getPackage())
                 .addPackage(GuiceConfiguration.class.getPackage())
+                .addPackage(ArquillianGuiceFilter.class.getPackage())
+                .addPackage(InjectorHolder.class.getPackage())
                 .addAsServiceProvider(RemoteLoadableExtension.class, GuiceEnricherRemoteExtension.class);
     }
 }

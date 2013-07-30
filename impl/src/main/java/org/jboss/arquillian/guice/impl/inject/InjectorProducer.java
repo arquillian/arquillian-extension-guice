@@ -23,8 +23,10 @@ import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.guice.api.annotation.GuiceInjector;
 import org.jboss.arquillian.guice.api.annotation.GuiceConfiguration;
+import org.jboss.arquillian.guice.api.annotation.GuiceInjector;
+import org.jboss.arquillian.guice.api.annotation.GuiceWebConfiguration;
+import org.jboss.arquillian.guice.api.utils.InjectorHolder;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
@@ -61,20 +63,26 @@ public class InjectorProducer {
      */
     public void initInjector(@Observes BeforeClass beforeClass) {
 
+        TestClass testClass;
         Injector injector;
 
-        if (isGuiceTest(beforeClass.getTestClass())) {
+        testClass = beforeClass.getTestClass();
 
-            if (hasCustomInjector(beforeClass.getTestClass())) {
+        if (isGuiceTest(testClass)) {
 
-                injector = getCustomInjector(beforeClass.getTestClass());
+            if (hasCustomInjector(testClass)) {
+
+                injector = getCustomInjector(testClass);
+            } else if (testClass.isAnnotationPresent(GuiceWebConfiguration.class)) {
+
+                injector = getServletContextInjector();
             } else {
 
                 // otherwise creates the injector
-                injector = createInjector(beforeClass.getTestClass());
+                injector = createInjector(testClass);
 
                 log.fine("Successfully created guice injector for model class: "
-                        + beforeClass.getTestClass().getName());
+                        + testClass.getName());
             }
 
             if (injector != null) {
@@ -82,6 +90,7 @@ public class InjectorProducer {
                 injectorInstance.set(injector);
             }
         }
+
     }
 
     /**
@@ -95,6 +104,16 @@ public class InjectorProducer {
 
         // creates new instance of guice injector
         return Guice.createInjector(getTestClassModules(testClass));
+    }
+
+    /**
+     * Retrieves the guice injector created
+     *
+     * @return the guice injector that has been created within the servlet context.
+     */
+    private Injector getServletContextInjector() {
+
+        return InjectorHolder.getInjector();
     }
 
     /**
@@ -131,6 +150,7 @@ public class InjectorProducer {
     private boolean isGuiceTest(TestClass testClass) {
 
         return testClass.isAnnotationPresent(GuiceConfiguration.class)
+                || testClass.isAnnotationPresent(GuiceWebConfiguration.class)
                 || hasCustomInjector(testClass);
     }
 

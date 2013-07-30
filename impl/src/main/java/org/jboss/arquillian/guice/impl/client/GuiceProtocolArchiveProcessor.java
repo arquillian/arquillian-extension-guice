@@ -31,6 +31,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Guice {@link ProtocolArchiveProcessor} that adds all the required dependencies into model deployment, so that the
@@ -108,8 +112,13 @@ public class GuiceProtocolArchiveProcessor implements ProtocolArchiveProcessor {
      */
     private File[] resolveGuiceDependencies() {
 
-        return resolveArtifact(GuiceExtensionConsts.GUICE_ARTIFACT_NAME, configurationInstance.get().getGuiceVersion(),
-                GuiceExtensionConsts.GUICE_ARTIFACT_VERSION);
+        List<File> dependencies = new ArrayList<File>();
+        dependencies.addAll(resolveArtifact(GuiceExtensionConsts.GUICE_ARTIFACT_NAME, configurationInstance.get().getGuiceVersion(),
+                GuiceExtensionConsts.GUICE_ARTIFACT_VERSION));
+        dependencies.addAll(resolveArtifact(GuiceExtensionConsts.GUICE_SEVLET_ARTIFACT_NAME, configurationInstance.get().getGuiceVersion(),
+                GuiceExtensionConsts.GUICE_ARTIFACT_VERSION));
+
+        return dependencies.toArray(new File[dependencies.size()]);
     }
 
     /**
@@ -120,7 +129,7 @@ public class GuiceProtocolArchiveProcessor implements ProtocolArchiveProcessor {
      *
      * @return the resolved files
      */
-    private File[] resolveArtifact(String artifact, String version, String defaultVersion) {
+    private Collection<File> resolveArtifact(String artifact, String version, String defaultVersion) {
 
         File[] artifacts = null;
 
@@ -132,7 +141,7 @@ public class GuiceProtocolArchiveProcessor implements ProtocolArchiveProcessor {
         } catch (Exception e) {
             artifacts = resolveArtifact(artifact + ":" + artifactVersion);
         }
-        return artifacts;
+        return Arrays.asList(artifacts);
     }
 
     /**
@@ -144,10 +153,9 @@ public class GuiceProtocolArchiveProcessor implements ProtocolArchiveProcessor {
      */
     private File[] resolveArtifact(String artifact) {
 
-        MavenResolverSystem mavenResolver = Maven.resolver();
-
-        mavenResolver.addDependencies(MavenDependencies.createDependency(artifact, ScopeType.COMPILE, false));
-
-        return mavenResolver.resolve().withTransitivity().asFile();
+        return Maven.resolver()
+                .resolve(artifact)
+                .withTransitivity()
+                .asFile();
     }
 }

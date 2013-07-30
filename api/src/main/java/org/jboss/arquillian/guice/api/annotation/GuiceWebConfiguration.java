@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2013, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,8 +16,6 @@
  */
 package org.jboss.arquillian.guice.api.annotation;
 
-import com.google.inject.Module;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -27,8 +25,8 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation used for configuring Guice within test. Allows to define a set of modules that will be used for
- * instantiating the Guice Injector prior running the tests.
+ * Marks that the test is using the Injector created within the servlet context. This annotation must be used with
+ * WebArchive deployment and properly configured {@link org.jboss.arquillian.guice.api.servlet.ArquillianGuiceFilter}.
  *
  * @author <a href="mailto:jmnarloch@gmail.com">Jakub Narloch</a>
  */
@@ -36,12 +34,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(TYPE)
 @Inherited
-public @interface GuiceConfiguration {
-
-    /**
-     * <p>Guice module classes.</p>
-     *
-     * @return guice module classes
-     */
-    Class<? extends Module>[] value();
+public @interface GuiceWebConfiguration {
 }
